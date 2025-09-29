@@ -42,11 +42,11 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    availableCells = []
+    availableCells = set()
     for i, rows in enumerate(board):
         for j, c in enumerate(rows):  # c stands for cell
             if c == EMPTY:
-                availableCells.append((i, j))
+                availableCells.add((i, j))
     return availableCells
 
 
@@ -56,6 +56,8 @@ def result(board, action):
     """
     newState = copy.deepcopy(board)
     ai, aj = action
+    if ai < 0 or ai > 2 or aj < 0 or aj > 2:
+        raise NameError("Not valid action")
     if board[ai][aj] != EMPTY:
         raise NameError("Not valid action")
     newState[ai][aj] = player(board)
@@ -119,7 +121,7 @@ def utility(board):
         return 0
 
 
-def maximize(board):
+def maximize(board, alpha, beta):
     if terminal(board):
         return (utility(board), -1, -1)
     possibleMoves = actions(board)
@@ -128,15 +130,18 @@ def maximize(board):
     c = -1
     for (i, j) in possibleMoves:
         newBoard = result(board, (i, j))
-        eval = minimize(newBoard)[0]
+        eval = minimize(newBoard, alpha, beta)[0]
         if value < eval:
             r = i
             c = j
         value = max(eval, value)
+        if value >= beta:
+            break
+        alpha = max(alpha, value)
     return (value, r, c)
 
 
-def minimize(board):
+def minimize(board, alpha, beta):
     if terminal(board):
         return (utility(board), 0, 0)
     possibleMoves = actions(board)
@@ -145,11 +150,14 @@ def minimize(board):
     c = -1
     for (i, j) in possibleMoves:
         newBoard = result(board, (i, j))
-        eval = maximize(newBoard)[0]
+        eval = maximize(newBoard, alpha, beta)[0]
         if eval < value:
             r = i
             c = j
         value = min(eval, value)
+        if value <= alpha:
+            break
+        beta = min(beta, value)
     return (value, r, c)
 
 
@@ -168,8 +176,8 @@ def minimax(board):
 
     # If playing as X AI should we should start maximizing, otherwise we use O and minize,
     if moveToken == X:
-        result = maximize(board)
+        result = maximize(board, alpha, beta)
         return (result[1], result[2])
     else:
-        result = minimize(board)
+        result = minimize(board, alpha, beta)
         return (result[1], result[2])
