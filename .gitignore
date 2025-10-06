@@ -1,4 +1,5 @@
 .DS_Store
 0 Search/degrees/large
 0 Search/degrees/small
-0 Search/tictactoe/__pycache__
+__pycache__/
+*.py[cod]
