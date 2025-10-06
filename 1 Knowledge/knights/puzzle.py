@@ -16,9 +16,8 @@ CKnave = Symbol("C is a Knave")
 knowledge0 = And(
     Implication(AKnight, Not(AKnave)),
     Implication(AKnave, Not(AKnight)),
-    # Statement true then A is knight
+    # A says "I am both a knight and a knave."
     Implication(And(AKnight, AKnave), AKnight),
-    # Statement false then A is knave
     Implication(Not(And(AKnight, AKnave)), AKnave),
 )
 
@@ -30,9 +29,8 @@ knowledge1 = And(
     Implication(AKnave, Not(AKnight)),
     Implication(BKnight, Not(BKnave)),
     Implication(BKnave, Not(BKnight)),
-    # If both are knaves then A is a knight
+    # A says "We are both knaves."
     Implication(And(AKnave, BKnave), AKnight),
-    # If they aren't both knaves then A is a knave
     Implication(Not(And(AKnave, BKnave)), AKnave),
     Implication(Not(And(AKnave, BKnave)), BKnight),
 )
@@ -45,8 +43,10 @@ knowledge2 = And(
     Implication(AKnave, Not(AKnight)),
     Implication(BKnight, Not(BKnave)),
     Implication(BKnave, Not(BKnight)),
+    # A says "We are the same kind."
     Implication(Or(And(BKnight, AKnight), And(BKnave, AKnave)), AKnight),
     Implication(Not(Or(And(BKnight, AKnight), And(BKnave, AKnave))), AKnave),
+    # B says "We are of different kinds."
     Implication(Or(And(BKnight, AKnave), And(BKnave, AKnight)), BKnight),
     Implication(Not(Or(And(BKnight, AKnave), And(BKnave, AKnight))), BKnave),
 )
@@ -63,12 +63,16 @@ knowledge3 = And(
     Implication(BKnave, Not(BKnight)),
     Implication(CKnight, Not(CKnave)),
     Implication(CKnave, Not(CKnight)),
+    # A says either "I am a knight." or "I am a knave.", but you don't know which.
     Implication(Or(AKnight, AKnave), AKnight),
     Implication(Not(Or(AKnight, AKnave)), AKnave),
+    # B says "A said 'I am a knave'."
     Implication(AKnave, BKnight),
     Implication(Not(AKnave), BKnave),
+    # B says "C is a knave."
     Implication(CKnave, BKnight),
     Implication(Not(CKnave), BKnave),
+    # C says "A is a knight."
     Implication(AKnight, CKnight),
     Implication(Not(AKnight), CKnave),
 )
